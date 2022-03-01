@@ -13,9 +13,14 @@ use App\Http\Controllers\HomeController;
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::middleware('guest')->group(function() {
+    Route::prefix('/')->controller(LoginController::class)->name('login')->group(function () {
+        Route::get('/', 'login');
+        Route::post('/', 'actionlogin');
+    });
+});
 
-Route::get('/', [LoginController::class, 'login'])->name('login');
-Route::post('actionlogin', [LoginController::class, 'actionlogin'])->name('actionlogin');
-
-Route::get('home', [HomeController::class, 'index'])->name('home')->middleware('auth');
-Route::get('actionlogout', [LoginController::class, 'actionlogout'])->name('actionlogout')->middleware('auth');
+Route::middleware('auth')->group(function() {
+    Route::get('home', [HomeController::class, 'index'])->name('home')->middleware('auth');
+    Route::get('actionlogout', [LoginController::class, 'actionlogout'])->name('actionlogout')->middleware('auth');
+});
